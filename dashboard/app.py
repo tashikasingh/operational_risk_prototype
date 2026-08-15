@@ -29,6 +29,7 @@ import os
 
 sys.path.insert(0, os.path.dirname(__file__))
 import db
+import email_utils
 
 st.set_page_config(page_title="Operational Risk Monitor", layout="wide", page_icon="\U0001F6E1\ufe0f")
 
@@ -239,31 +240,48 @@ if page == "Main Dashboard":
     df = db.get_all_incidents()
 
     n_open = len(df[df["Status"].isin(["Open", "Under Investigation"])])
+    n_pending = len(df[df["Status"] == "Pending Approval"])
     render_kpis([
         kpi_card("\U0001F4C1", "Total Incidents", len(df), COLORS["accent"]),
         kpi_card("\u26A0\ufe0f", "High / Critical Risk", len(df[df["Risk_Tier"].isin(["High", "Critical"])]), COLORS["high"]),
         kpi_card("\U0001F4C8", "Average Risk Score", f"{df['Risk_Score'].mean():.1f}", COLORS["medium"]),
         kpi_card("\U0001F550", "Open / Under Investigation", n_open, COLORS["navy"]),
+        kpi_card("\U0001F4E9", "Pending Approval", n_pending, COLORS["medium"]),
     ])
 
     col_a, col_b = st.columns(2)
     with col_a:
         st.subheader("Incidents by Category")
-        cat_counts = df["Category"].value_counts().reset_index()
-        cat_counts.columns = ["Category", "Count"]
-        fig = px.bar(cat_counts, x="Category", y="Count")
-        fig.update_traces(marker_color=COLORS["accent"])
+        cat_stats = df.groupby("Category").agg(
+            Count=("Incident_ID", "count"),
+            Avg_Risk_Score=("Risk_Score", "mean")
+        ).reset_index()
+        cat_stats["Pct"] = (cat_stats["Count"] / len(df) * 100).round(1)
+        cat_stats = cat_stats.sort_values("Count", ascending=False)
+        fig = px.bar(cat_stats, x="Category", y="Count",
+                     custom_data=["Pct", "Avg_Risk_Score"])
+        fig.update_traces(
+            marker_color=COLORS["accent"],
+            hovertemplate="<b>%{x}</b><br>Incidents: %{y} (%{customdata[0]}% of total)<br>"
+                          "Avg Risk Score: %{customdata[1]:.1f}<extra></extra>"
+        )
         fig.update_layout(xaxis_tickangle=-30, height=400, plot_bgcolor="white", paper_bgcolor="white")
         st.plotly_chart(fig, width='stretch')
 
     with col_b:
         st.subheader("Risk Tier Breakdown")
-        tier_counts = df["Risk_Tier"].value_counts().reset_index()
-        tier_counts.columns = ["Risk_Tier", "Count"]
-        fig = px.pie(tier_counts, names="Risk_Tier", values="Count",
-                     color="Risk_Tier",
+        tier_stats = df.groupby("Risk_Tier").agg(
+            Count=("Incident_ID", "count"),
+            Avg_Financial_Impact=("Financial_Impact_GBP", "mean")
+        ).reset_index()
+        fig = px.pie(tier_stats, names="Risk_Tier", values="Count",
+                     color="Risk_Tier", custom_data=["Avg_Financial_Impact"],
                      color_discrete_map={"Low": COLORS["low"], "Medium": COLORS["medium"],
                                          "High": COLORS["high"], "Critical": COLORS["critical"]})
+        fig.update_traces(
+            hovertemplate="<b>%{label}</b><br>Incidents: %{value} (%{percent})<br>"
+                          "Avg Financial Impact: £%{customdata[0]:,.0f}<extra></extra>"
+        )
         fig.update_layout(height=400, paper_bgcolor="white")
         st.plotly_chart(fig, width='stretch')
 
@@ -271,16 +289,34 @@ if page == "Main Dashboard":
     df["Date_Reported"] = pd.to_datetime(df["Date_Reported"], errors="coerce")
     trend = df.dropna(subset=["Date_Reported"]).copy()
     trend["Month"] = trend["Date_Reported"].dt.to_period("M").astype(str)
-    monthly = trend.groupby("Month")["Risk_Score"].mean().reset_index()
-    fig = px.line(monthly, x="Month", y="Risk_Score", markers=True)
-    fig.update_traces(line_color=COLORS["accent"], marker_color=COLORS["navy"])
+    monthly = trend.groupby("Month").agg(
+        Risk_Score=("Risk_Score", "mean"),
+        Incident_Count=("Incident_ID", "count")
+    ).reset_index()
+    fig = px.line(monthly, x="Month", y="Risk_Score", markers=True,
+                  custom_data=["Incident_Count"])
+    fig.update_traces(
+        line_color=COLORS["accent"], marker_color=COLORS["navy"],
+        hovertemplate="<b>%{x}</b><br>Avg Risk Score: %{y:.1f}<br>"
+                      "Incidents that month: %{customdata[0]}<extra></extra>"
+    )
     fig.update_layout(height=350, yaxis_title="Average Risk Score", plot_bgcolor="white", paper_bgcolor="white")
     st.plotly_chart(fig, width='stretch')
 
     st.subheader("Top 5 Highest Risk Incidents")
-    top5 = df.sort_values("Risk_Score", ascending=False).head(5)[
-        ["Incident_ID", "Description", "Category", "Risk_Score", "Risk_Tier"]].copy()
-    top5["Description"] = top5["Description"].str[:70] + "..."
+    st.caption(
+        "Ranked by Risk Score, descending. Ties are broken by Financial Impact (higher first), "
+        "then by most recently reported — reflecting that between two incidents of equal Likelihood × "
+        "Impact score, the one with greater actual financial exposure and more recent occurrence "
+        "warrants earlier attention."
+    )
+    top5 = df.sort_values(
+        ["Risk_Score", "Financial_Impact_GBP", "Date_Reported"],
+        ascending=[False, False, False]
+    ).head(5)[["Incident_ID", "Description", "Category", "Financial_Impact_GBP", "Risk_Score", "Risk_Tier"]].copy()
+    top5.insert(0, "Rank", [f"#{i+1}" for i in range(len(top5))])
+    top5["Description"] = top5["Description"].str[:60] + "..."
+    top5["Financial_Impact_GBP"] = top5["Financial_Impact_GBP"].apply(lambda x: f"£{x:,.0f}")
     render_html_table(top5, badge_col="Risk_Tier")
 
 # =======================================================================
@@ -370,7 +406,7 @@ elif page == "Submit Incident":
                                             [p["predicted_category"]] +
                                             [c for c in category_likelihood if c != p["predicted_category"]])
         with c2:
-            if st.button("Confirm & Save"):
+            if st.button("Confirm & Send for Approval"):
                 new_id = db.get_next_incident_id()
                 db.insert_incident(
                     incident_id=new_id,
@@ -384,8 +420,26 @@ elif page == "Submit Incident":
                     risk_score=p["risk_score"],
                     risk_tier=p["tier"],
                     model_confidence=p["confidence_str"],
+                    status="Pending Approval",
                 )
-                st.success(f"Saved as {new_id}")
+                st.success(f"Saved as {new_id} — status: **Pending Approval**")
+
+                with st.spinner("Sending approval notification email..."):
+                    email_sent, email_message = email_utils.send_approval_notification(
+                        incident_id=new_id,
+                        description=p["description"],
+                        category=final_category,
+                        severity=p["severity"],
+                        risk_score=p["risk_score"],
+                        risk_tier=p["tier"],
+                    )
+                if email_sent:
+                    st.info(f"\U0001F4E7 {email_message} A maker-checker control: the incident stays "
+                            "Pending Approval until a senior risk officer approves or rejects it from "
+                            "the Incident Detail screen.")
+                else:
+                    st.warning(f"\u26A0\ufe0f {email_message} The incident was still saved and remains "
+                               "Pending Approval — only the email notification failed.")
                 del st.session_state.pending_incident
 
 # =======================================================================
@@ -431,14 +485,29 @@ elif page == "Incident Detail":
             st.write(f"**Risk Tier:**")
             st.markdown(risk_badge(record['Risk_Tier']), unsafe_allow_html=True)
 
-            new_status = st.selectbox(
-                "Status", ["Open", "Under Investigation", "Escalated", "Resolved", "Closed"],
-                index=["Open", "Under Investigation", "Escalated", "Resolved", "Closed"].index(record["Status"])
-                if record["Status"] in ["Open", "Under Investigation", "Escalated", "Resolved", "Closed"] else 0
-            )
-            if st.button("Update Status"):
-                db.update_status(incident_id, new_status)
-                st.success("Status updated.")
+            st.write("**Status:**")
+            if record["Status"] == "Pending Approval":
+                st.warning("\u23F3 Awaiting senior risk officer approval before this incident is finalised.")
+                ac1, ac2 = st.columns(2)
+                with ac1:
+                    if st.button("\u2705 Approve", type="primary"):
+                        db.update_status(incident_id, "Open")
+                        st.success("Approved — status set to Open.")
+                        st.rerun()
+                with ac2:
+                    if st.button("\u274C Reject"):
+                        db.update_status(incident_id, "Rejected")
+                        st.error("Rejected — incident flagged for review/correction.")
+                        st.rerun()
+            else:
+                status_options = ["Pending Approval", "Open", "Under Investigation", "Escalated", "Resolved", "Closed", "Rejected"]
+                new_status = st.selectbox(
+                    "Change status", status_options,
+                    index=status_options.index(record["Status"]) if record["Status"] in status_options else 0
+                )
+                if st.button("Update Status"):
+                    db.update_status(incident_id, new_status)
+                    st.success("Status updated.")
 
 # =======================================================================
 # SCREEN 5: INSIGHTS (root-cause analysis, trends, anomalies)
