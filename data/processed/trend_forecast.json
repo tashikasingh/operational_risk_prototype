@@ -1,0 +1,168 @@
+{
+  "historical": [
+    {
+      "Month": "2024-01",
+      "Incident_Count": 18,
+      "Avg_Risk_Score": 9.444444444444445
+    },
+    {
+      "Month": "2024-02",
+      "Incident_Count": 18,
+      "Avg_Risk_Score": 10.277777777777779
+    },
+    {
+      "Month": "2024-03",
+      "Incident_Count": 15,
+      "Avg_Risk_Score": 10.733333333333333
+    },
+    {
+      "Month": "2024-04",
+      "Incident_Count": 23,
+      "Avg_Risk_Score": 8.782608695652174
+    },
+    {
+      "Month": "2024-05",
+      "Incident_Count": 18,
+      "Avg_Risk_Score": 9.5
+    },
+    {
+      "Month": "2024-06",
+      "Incident_Count": 18,
+      "Avg_Risk_Score": 8.833333333333334
+    },
+    {
+      "Month": "2024-07",
+      "Incident_Count": 15,
+      "Avg_Risk_Score": 11.0
+    },
+    {
+      "Month": "2024-08",
+      "Incident_Count": 16,
+      "Avg_Risk_Score": 8.25
+    },
+    {
+      "Month": "2024-09",
+      "Incident_Count": 12,
+      "Avg_Risk_Score": 9.583333333333334
+    },
+    {
+      "Month": "2024-10",
+      "Incident_Count": 14,
+      "Avg_Risk_Score": 9.357142857142858
+    },
+    {
+      "Month": "2024-11",
+      "Incident_Count": 22,
+      "Avg_Risk_Score": 8.863636363636363
+    },
+    {
+      "Month": "2024-12",
+      "Incident_Count": 9,
+      "Avg_Risk_Score": 8.666666666666666
+    },
+    {
+      "Month": "2025-01",
+      "Incident_Count": 19,
+      "Avg_Risk_Score": 8.789473684210526
+    },
+    {
+      "Month": "2025-02",
+      "Incident_Count": 17,
+      "Avg_Risk_Score": 9.647058823529411
+    },
+    {
+      "Month": "2025-03",
+      "Incident_Count": 17,
+      "Avg_Risk_Score": 9.176470588235293
+    },
+    {
+      "Month": "2025-04",
+      "Incident_Count": 21,
+      "Avg_Risk_Score": 11.19047619047619
+    },
+    {
+      "Month": "2025-05",
+      "Incident_Count": 15,
+      "Avg_Risk_Score": 7.6
+    },
+    {
+      "Month": "2025-06",
+      "Incident_Count": 17,
+      "Avg_Risk_Score": 9.294117647058824
+    },
+    {
+      "Month": "2025-07",
+      "Incident_Count": 12,
+      "Avg_Risk_Score": 11.166666666666666
+    },
+    {
+      "Month": "2025-08",
+      "Incident_Count": 14,
+      "Avg_Risk_Score": 11.714285714285714
+    },
+    {
+      "Month": "2025-09",
+      "Incident_Count": 17,
+      "Avg_Risk_Score": 11.0
+    },
+    {
+      "Month": "2025-10",
+      "Incident_Count": 19,
+      "Avg_Risk_Score": 8.368421052631579
+    },
+    {
+      "Month": "2025-11",
+      "Incident_Count": 20,
+      "Avg_Risk_Score": 8.5
+    },
+    {
+      "Month": "2025-12",
+      "Incident_Count": 17,
+      "Avg_Risk_Score": 8.470588235294118
+    },
+    {
+      "Month": "2026-01",
+      "Incident_Count": 16,
+      "Avg_Risk_Score": 11.75
+    },
+    {
+      "Month": "2026-02",
+      "Incident_Count": 17,
+      "Avg_Risk_Score": 8.235294117647058
+    },
+    {
+      "Month": "2026-03",
+      "Incident_Count": 16,
+      "Avg_Risk_Score": 8.125
+    },
+    {
+      "Month": "2026-04",
+      "Incident_Count": 18,
+      "Avg_Risk_Score": 12.11111111111111
+    },
+    {
+      "Month": "2026-05",
+      "Incident_Count": 14,
+      "Avg_Risk_Score": 13.0
+    },
+    {
+      "Month": "2026-06",
+      "Incident_Count": 16,
+      "Avg_Risk_Score": 9.6875
+    }
+  ],
+  "forecast_incident_count": [
+    16.128738950280646,
+    16.094033859051812,
+    16.059328767822976
+  ],
+  "forecast_avg_risk_score": [
+    10.163630662851222,
+    10.193286982689003,
+    10.222943302526785
+  ],
+  "incident_count_trend_significant": false,
+  "incident_count_p_value": 0.5862293121610423,
+  "risk_score_trend_significant": false,
+  "risk_score_p_value": 0.31499616802854
+}

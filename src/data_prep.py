@@ -1,52 +1,48 @@
 """
-Data Preparation Script
-========================
+Data Preparation Script (v2 -- Noisy Dataset)
+================================================
 
-PURPOSE
--------
-Loads the expanded 500-row operational risk dataset, checks it for quality
-issues, and produces a stratified train/test split ready for the text
-classifier (TF-IDF + Naive Bayes / Logistic Regression / Random Forest).
+UPDATE FROM v1
+----------------
+Following supervisor feedback, the classifier trained on an overly
+clean, templated synthetic dataset achieved a suspicious 100% test
+accuracy. This version switches to a deliberately noisy 500-row
+dataset incorporating: character-level typos, casing/punctuation
+irregularities, ambiguous cross-category descriptions, deliberate
+label noise (Category vs True_Category), near-duplicate descriptions
+reused across categories, and vague/truncated text.
 
-WHY THESE STEPS (for dissertation Methodology chapter)
---------------------------------------------------------
-1. STRATIFIED SPLIT: With 8 categories at ~62-63 rows each, a plain random
-   80/20 split could by chance under- or over-represent a category in the
-   test set. Stratified splitting (via scikit-learn's `stratify` parameter)
-   splits EACH category 80/20 individually, so every category keeps its
-   proportional representation in both train and test sets. This is
-   standard practice for multi-class classification and gives more
-   reliable per-class evaluation metrics later.
+IMPORTANT METHODOLOGICAL DECISION: TRAIN ON 'Category', NOT 'True_Category'
+-------------------------------------------------------------------------------
+The classifier is trained and evaluated against the 'Category' field
+(the recorded/noisy label), NOT 'True_Category'. This is deliberate:
+in a real bank, the model would only ever see the label an analyst
+actually recorded (which may itself contain human error) -- it would
+never have access to a "ground truth" label. 'True_Category' is kept
+in the output files purely as a DIAGNOSTIC field, to allow later
+analysis of whether the model's misclassifications tend to align with
+the true category (i.e. whether the model "sees through" label noise)
+-- a genuinely interesting discussion point for the Results chapter,
+not something to train on directly.
 
-2. FIXED RANDOM SEED (random_state=42): ensures the split is reproducible —
-   running this script twice gives the exact same train/test split, which
-   matters for consistent, comparable results across your dissertation
-   write-up and for anyone (e.g. an examiner) re-running your code.
-
-3. TEXT CLEANING (lowercasing, whitespace normalisation): reduces
-   unnecessary vocabulary size for the TF-IDF step later. E.g. without
-   lowercasing, "Fraud" and "fraud" would be treated as two different
-   words, artificially inflating the vocabulary and diluting word
-   frequency signals.
-
-4. SAVING THE SPLIT TO DISK: train.csv and test.csv are saved once here,
-   so later scripts (train_classifier.py, evaluate.py) load the SAME split
-   every time rather than re-splitting randomly on each run — this is
-   what makes the whole pipeline reproducible end to end.
+WHY WE DO NOT "CLEAN" THE TEXT NOISE
+------------------------------------------
+Unlike v1, we deliberately do NOT correct typos, casing, or truncation
+in Description_clean beyond lowercasing. Removing the noise would
+defeat the purpose of this dataset revision -- the classifier needs to
+face realistic, imperfect text, since that is precisely what a
+production incident-reporting system would produce.
 
 OUTPUT
 ------
-data/processed/train.csv
+data/processed/train.csv  (includes Category, True_Category, noise flags)
 data/processed/test.csv
 """
 
 import pandas as pd
 from sklearn.model_selection import train_test_split
 
-# ---------------------------------------------------------------------
-# 1. Load data
-# ---------------------------------------------------------------------
-INPUT_PATH = "data/processed/operational_risk_synthetic_dataset_expanded.xlsx"
+INPUT_PATH = "data/processed/operational_risk_synthetic_dataset_noisy.xlsx"
 TRAIN_OUTPUT = "data/processed/train.csv"
 TEST_OUTPUT = "data/processed/test.csv"
 
@@ -54,40 +50,34 @@ df = pd.read_excel(INPUT_PATH, sheet_name="Incident_Data")
 print(f"Loaded {len(df)} rows, {df.shape[1]} columns")
 
 # ---------------------------------------------------------------------
-# 2. Data quality checks
+# Data quality checks (expect noise indicators to show up here now --
+# that's correct and expected, not a bug)
 # ---------------------------------------------------------------------
 print("\n--- Data Quality Checks ---")
 
-# Missing values
 missing = df.isnull().sum()
 print("Missing values per column:")
 print(missing[missing > 0] if missing.sum() > 0 else "  None found")
 
-# Duplicate rows (exact duplicates across all columns)
 n_dupes = df.duplicated().sum()
 print(f"\nExact duplicate rows: {n_dupes}")
 
-# Duplicate descriptions (same text, different incident — worth knowing,
-# not necessarily a problem, since templated generation can produce
-# near-identical phrasing for different entities)
-n_dupe_desc = df["Description"].duplicated().sum()
-print(f"Duplicate description text: {n_dupe_desc}")
+n_label_noise = (df["Category"] != df["True_Category"]).sum()
+print(f"Label noise cases (Category != True_Category): {n_label_noise}")
 
-# Empty or very short descriptions (would carry little signal for TF-IDF)
-short_desc = df[df["Description"].str.len() < 15]
-print(f"Descriptions under 15 characters: {len(short_desc)}")
+n_ambiguous = (df["Is_Ambiguous_Case"] == "Yes").sum()
+print(f"Ambiguous cross-category cases: {n_ambiguous}")
 
-# Category counts (confirm balance after expansion)
-print("\nCategory distribution:")
+n_dup_text = (df["Is_Duplicate_Text"] == "Yes").sum()
+print(f"Near-duplicate text cases: {n_dup_text}")
+
+print("\nCategory distribution (recorded, i.e. what we train on):")
 print(df["Category"].value_counts())
 
 # ---------------------------------------------------------------------
-# 3. Basic text cleaning
+# Minimal text cleaning -- lowercase + whitespace strip ONLY.
+# Typos, casing noise, truncation are left intact deliberately (see docstring).
 # ---------------------------------------------------------------------
-# Lowercase and strip extra whitespace. We deliberately do NOT remove
-# punctuation or numbers at this stage -- TF-IDF handles tokenisation,
-# and numbers (e.g. customer counts) may carry weak signal. Aggressive
-# cleaning happens inside the TF-IDF vectoriser step later if needed.
 df["Description_clean"] = (
     df["Description"]
     .str.strip()
@@ -95,17 +85,17 @@ df["Description_clean"] = (
 )
 
 # ---------------------------------------------------------------------
-# 4. Select columns needed for classification
+# Select columns -- keep True_Category and noise flags for diagnostics
 # ---------------------------------------------------------------------
-# We keep the ID and original columns too (useful for error analysis
-# later -- e.g. looking up which specific incidents were misclassified)
 model_df = df[[
     "Incident_ID", "Description", "Description_clean",
-    "Category", "Severity", "Financial_Impact_GBP"
+    "Category", "True_Category", "Severity", "Financial_Impact_GBP",
+    "Is_Ambiguous_Case", "Is_Label_Noise", "Is_Duplicate_Text",
 ]].copy()
 
 # ---------------------------------------------------------------------
-# 5. Stratified train/test split
+# Stratified train/test split on the RECORDED Category (what the
+# classifier will actually be trained/evaluated on)
 # ---------------------------------------------------------------------
 train_df, test_df = train_test_split(
     model_df,
@@ -119,9 +109,6 @@ print(train_df["Category"].value_counts())
 print(f"\nTest set: {len(test_df)} rows")
 print(test_df["Category"].value_counts())
 
-# ---------------------------------------------------------------------
-# 6. Save outputs
-# ---------------------------------------------------------------------
 train_df.to_csv(TRAIN_OUTPUT, index=False)
 test_df.to_csv(TEST_OUTPUT, index=False)
 print(f"\nSaved: {TRAIN_OUTPUT}")

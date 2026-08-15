@@ -1,0 +1,27 @@
+Incident_ID,Description,Category,True_Category,Model_Prediction,Matches_Recorded,Matches_True
+OPR-0009,Health and safety inspection identified non-compliance in Human Resources office premises.,External Fraud,"Clients, Products & Business Practices",Employment Practices & Workplace Safety,False,False
+OPR-0010,Staff member sustained injury during Compliance office relocation activities.,"Clients, Products & Business Practices",Employment Practices & Workplace Safety,Employment Practices & Workplace Safety,False,True
+OPR-0034,"Card-not-present fraud detected across 408 transactions totalling £528,000.",Employment Practices & Workplace Safety,External Fraud,External Fraud,False,True
+OPR-0045,Customer data used for maketing without valid consent under GDPR for 128 clients.,Internal Fraud,"Clients, Products & Business Practices","Clients, Products & Business Practices",False,True
+OPR-0062,Incorrect interest rate applied to 332 customer accounts due to configuration error.,Internal Fraud,External Fraud,"Execution, Delivery & Process Management",False,False
+OPR-0093,"Incident at Human Resources site caused loan origination system to become unavailable, engineers dispatched.",Internal Fraud,Damage to Physical Assets,Damage to Physical Assets,False,True
+OPR-0129,Core banking system outage disrupted payment gateway services for 1 business day.,"Execution, Delivery & Process Management",Business Disruption & System Failures,Business Disruption & System Failures,False,True
+OPR-0141,Power outage caused by storm damage.,"Execution, Delivery & Process Management",Damage to Physical Assets,Damage to Physical Assets,False,True
+OPR-0165,"Incident at Customer Services site caused core banking platform to become unavailable, engineers dispatched.",External Fraud,Damage to Physical Assets,Business Disruption & System Failures,False,False
+OPR-0172,Misconfigured cloud storage bucket exposed sensitive Customer Services data publicly.,"Execution, Delivery & Process Management",Cybersecurity Incident,Cybersecurity Incident,False,True
+OPR-0174,Employee an operations officer manipulated payment gateway records to conceal unauthorised fund transfers.,"Execution, Delivery & Process Management",Internal Fraud,Internal Fraud,False,True
+OPR-0216,Misconfigured cloud storage bucket exposed sensitive Corporate Banking data publicly.,Business Disruption & System Failures,Cybersecurity Incident,Cybersecurity Incident,False,True
+OPR-0228,"Vandalism reported at ATM located at Payments branch, machine offline for repair.",External Fraud,Damage to Physical Assets,Damage to Physical Assets,False,True
+OPR-0241,Network connectivity failure at Customer Services data centre affected 434 branches.,"Execution, Delivery & Process Management",Business Disruption & System Failures,Business Disruption & System Failures,False,True
+OPR-0250,Employee grievance filed alleging discriminatory practice within IT Operations team.,Damage to Physical Assets,Employment Practices & Workplace Safety,Employment Practices & Workplace Safety,False,True
+OPR-0261,Misconfigured cloud storage bucket exposed sensitive Wealth Management data publicly.,External Fraud,Cybersecurity Incident,Cybersecurity Incident,False,True
+OPR-0270,Business email compromise led to fraudulent payment of £48000 to external account.,Business Disruption & System Failures,External Fraud,External Fraud,False,True
+OPR-0308,Software deployment error caused payment gateway downtime lasting 6 hours.,Employment Practices & Workplace Safety,Business Disruption & System Failures,Business Disruption & System Failures,False,True
+OPR-0334,"Ransomware attack encrypted files on core banking platform, disrupting Payments operations.","Clients, Products & Business Practices","Execution, Delivery & Process Management",Cybersecurity Incident,False,False
+OPR-0337,Third-party cloud provider outage disrupted access to CRM system platform.,"Execution, Delivery & Process Management",Business Disruption & System Failures,Business Disruption & System Failures,False,True
+OPR-0418,Business email compromise led to fraudulent payment of £48000 to external account.,Cybersecurity Incident,External Fraud,External Fraud,False,True
+OPR-0432,Incorrect interest rate appled to 300 customer accounts due to configuration error.,Employment Practices & Workplace Safety,"Execution, Delivery & Process Management","Execution, Delivery & Process Management",False,True
+OPR-0467,"Ransomware attack encrypted files on core banking platform, disrupting Cimpliance operations.",Business Disruption & System Failures,Cybersecurity Incident,Cybersecurity Incident,False,True
+OPR-0470,Core banking system outage disrupted core banking platform services for 2 hours.,"Clients, Products & Business Practices",Business Disruption & System Failures,Business Disruption & System Failures,False,True
+OPR-0484,Flooding at Corporaate Banking dtaa centre caused disruption to on-site server infrastructure.,Cybersecurity Incident,Damage to Physical Assets,Damage to Physical Assets,False,True
+OPR-0487,Card-not-present fraud detected across 130 transactions totalling £25000.,Internal Fraud,External Fraud,External Fraud,False,True

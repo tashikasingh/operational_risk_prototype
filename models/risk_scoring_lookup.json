@@ -1,0 +1,18 @@
+{
+  "category_likelihood": {
+    "Internal Fraud": 5,
+    "Employment Practices & Workplace Safety": 5,
+    "Execution, Delivery & Process Management": 5,
+    "External Fraud": 4,
+    "Business Disruption & System Failures": 4,
+    "Cybersecurity Incident": 3,
+    "Clients, Products & Business Practices": 3,
+    "Damage to Physical Assets": 1
+  },
+  "severity_to_impact": {
+    "Low": 1,
+    "Medium": 2,
+    "High": 3,
+    "Critical": 5
+  }
+}

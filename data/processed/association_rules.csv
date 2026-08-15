@@ -1,0 +1,4 @@
+antecedents,consequents,support,confidence,lift
+Department=Retail Banking,Severity=High,0.034,0.4857142857142857,1.3567438148443736
+Category=Internal Fraud,Severity=High,0.068,0.4788732394366198,1.3376347470296643
+Category=Business Disruption & System Failures,Severity=High,0.062,0.4769230769230769,1.3321873657069188
