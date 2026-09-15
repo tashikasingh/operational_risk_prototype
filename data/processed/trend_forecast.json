@@ -149,6 +149,11 @@
       "Month": "2026-06",
       "Incident_Count": 16,
       "Avg_Risk_Score": 9.6875
+    },
+    {
+      "Month": "2026-09",
+      "Incident_Count": 4,
+      "Avg_Risk_Score": 6.25
     }
   ],
   "forecast_incident_count": [
@@ -164,5 +169,31 @@
   "incident_count_trend_significant": false,
   "incident_count_p_value": 0.5862293121610423,
   "risk_score_trend_significant": false,
-  "risk_score_p_value": 0.31499616802854
+  "risk_score_p_value": 0.31499616802854,
+  "backtest": {
+    "available": true,
+    "months": [
+      "2026-04",
+      "2026-05",
+      "2026-06"
+    ],
+    "actual": [
+      18,
+      14,
+      16
+    ],
+    "holt_prediction": [
+      16.347578019447102,
+      16.319494968397407,
+      16.291411917347713
+    ],
+    "moving_avg_prediction": [
+      16.333333333333332,
+      16.333333333333332,
+      16.333333333333332
+    ],
+    "holt_mae": 1.4211096220993393,
+    "moving_avg_mae": 1.444444444444444
+  },
+  "excluded_current_month": true
 }

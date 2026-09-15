@@ -1,42 +1,30 @@
 [
   {
     "cluster_id": 0,
-    "label": "caused / data / banking",
-    "size": 157,
-    "dominant_category": "Cybersecurity Incident",
+    "label": "suitability / identified inadequate / regulatory",
+    "size": 19,
+    "dominant_category": "Clients, Products & Business Practices",
     "top_terms": [
-      "caused",
-      "data",
-      "banking"
+      "suitability",
+      "identified inadequate",
+      "regulatory"
     ],
-    "recommendation": "Strengthen data loss prevention (DLP) controls, endpoint protection, and breach notification protocols; conduct regular penetration testing."
+    "recommendation": "Enhance KYC/suitability assessment training and pre-sale product review checkpoints."
   },
   {
     "cluster_id": 1,
-    "label": "error / review / customer",
-    "size": 65,
+    "label": "error / customer accounts / incorrect",
+    "size": 48,
     "dominant_category": "Execution, Delivery & Process Management",
     "top_terms": [
       "error",
-      "review",
-      "customer"
+      "customer accounts",
+      "incorrect"
     ],
-    "recommendation": "Review controls specific to Execution, Delivery & Process Management incidents; no specific keyword-matched recommendation for this cluster's theme."
+    "recommendation": "Review controls specific to Execution, Delivery & Process Management incidents."
   },
   {
     "cluster_id": 2,
-    "label": "core banking / outage / disrupted",
-    "size": 54,
-    "dominant_category": "Business Disruption & System Failures",
-    "top_terms": [
-      "core banking",
-      "outage",
-      "disrupted"
-    ],
-    "recommendation": "Invest in system resilience, redundancy, and regular failover/disaster-recovery testing for core banking systems."
-  },
-  {
-    "cluster_id": 3,
     "label": "discriminatory / filed / grievance",
     "size": 22,
     "dominant_category": "Employment Practices & Workplace Safety",
@@ -48,7 +36,43 @@
     "recommendation": "Review HR grievance handling procedures and conduct workplace conduct/diversity training."
   },
   {
+    "cluster_id": 3,
+    "label": "data / centre / connectivity failure",
+    "size": 51,
+    "dominant_category": "Cybersecurity Incident",
+    "top_terms": [
+      "data",
+      "centre",
+      "connectivity failure"
+    ],
+    "recommendation": "Strengthen data loss prevention (DLP) controls, endpoint protection, and breach notification protocols; conduct regular penetration testing."
+  },
+  {
     "cluster_id": 4,
+    "label": "unauthorised access / attack / resulted",
+    "size": 32,
+    "dominant_category": "External Fraud",
+    "top_terms": [
+      "unauthorised access",
+      "attack",
+      "resulted"
+    ],
+    "recommendation": "Implement multi-factor authentication and continuous access monitoring for customer-facing systems."
+  },
+  {
+    "cluster_id": 5,
+    "label": "staff / member / damage",
+    "size": 65,
+    "dominant_category": "Damage to Physical Assets",
+    "top_terms": [
+      "staff",
+      "member",
+      "damage"
+    ],
+    "recommendation": "Increase health & safety audit frequency across office/branch premises."
+  },
+  {
+    "cluster_id": 6,
     "label": "regarding / complaint / raised",
     "size": 23,
     "dominant_category": "Employment Practices & Workplace Safety",
@@ -60,43 +84,55 @@
     "recommendation": "Review HR grievance handling procedures and conduct workplace conduct/diversity training."
   },
   {
-    "cluster_id": 5,
-    "label": "used / documents / fraudulent",
-    "size": 41,
-    "dominant_category": "Clients, Products & Business Practices",
-    "top_terms": [
-      "used",
-      "documents",
-      "fraudulent"
-    ],
-    "recommendation": "Enhance card-present fraud monitoring and enforce chip-and-PIN / tokenisation controls."
-  },
-  {
-    "cluster_id": 6,
-    "label": "claims / expense / employee falsified",
-    "size": 15,
-    "dominant_category": "Internal Fraud",
-    "top_terms": [
-      "claims",
-      "expense",
-      "employee falsified"
-    ],
-    "recommendation": "Strengthen expense claim audit controls and automated anomaly flagging on reimbursement systems."
-  },
-  {
     "cluster_id": 7,
-    "label": "safety / health / inspection",
-    "size": 17,
-    "dominant_category": "Employment Practices & Workplace Safety",
+    "label": "core banking / platform / disrupted",
+    "size": 88,
+    "dominant_category": "Business Disruption & System Failures",
     "top_terms": [
-      "safety",
-      "health",
-      "inspection"
+      "core banking",
+      "platform",
+      "disrupted"
     ],
-    "recommendation": "Increase health & safety audit frequency across office/branch premises."
+    "recommendation": "Invest in system resilience, redundancy, and regular failover/disaster-recovery testing for core banking systems."
   },
   {
     "cluster_id": 8,
+    "label": "totalling / payment / employee",
+    "size": 79,
+    "dominant_category": "Internal Fraud",
+    "top_terms": [
+      "totalling",
+      "payment",
+      "employee"
+    ],
+    "recommendation": "Review third-party vendor SLAs and implement payment processing redundancy/failover testing."
+  },
+  {
+    "cluster_id": 9,
+    "label": "identified / safety / health",
+    "size": 29,
+    "dominant_category": "Employment Practices & Workplace Safety",
+    "top_terms": [
+      "identified",
+      "safety",
+      "health"
+    ],
+    "recommendation": "Review controls specific to Employment Practices & Workplace Safety incidents."
+  },
+  {
+    "cluster_id": 10,
+    "label": "used / data / gdpr",
+    "size": 32,
+    "dominant_category": "Clients, Products & Business Practices",
+    "top_terms": [
+      "used",
+      "data",
+      "gdpr"
+    ],
+    "recommendation": "Strengthen data loss prevention (DLP) controls, endpoint protection, and breach notification protocols; conduct regular penetration testing."
+  },
+  {
+    "cluster_id": 11,
     "label": "authorised limits / concealed / mismarked",
     "size": 16,
     "dominant_category": "Internal Fraud",
@@ -106,41 +142,5 @@
       "mismarked"
     ],
     "recommendation": "Strengthen trade surveillance systems and enforce stricter segregation of duties on position limits."
-  },
-  {
-    "cluster_id": 9,
-    "label": "unauthorised access / attack / phishing",
-    "size": 32,
-    "dominant_category": "External Fraud",
-    "top_terms": [
-      "unauthorised access",
-      "attack",
-      "phishing"
-    ],
-    "recommendation": "Implement multi-factor authentication and continuous access monitoring for customer-facing systems."
-  },
-  {
-    "cluster_id": 10,
-    "label": "payment / failure / duplicate",
-    "size": 32,
-    "dominant_category": "Execution, Delivery & Process Management",
-    "top_terms": [
-      "payment",
-      "failure",
-      "duplicate"
-    ],
-    "recommendation": "Review third-party vendor SLAs and implement payment processing redundancy/failover testing."
-  },
-  {
-    "cluster_id": 11,
-    "label": "staff / member / sustained",
-    "size": 26,
-    "dominant_category": "Employment Practices & Workplace Safety",
-    "top_terms": [
-      "staff",
-      "member",
-      "sustained"
-    ],
-    "recommendation": "Increase health & safety audit frequency across office/branch premises."
   }
 ]

@@ -89,7 +89,7 @@ def load_initial_data(csv_path):
 
 def insert_incident(incident_id, date_reported, description, category, severity,
                      financial_impact, likelihood_score, impact_score, risk_score,
-                     risk_tier, model_confidence, status="Open"):
+                     risk_tier, model_confidence, status="Pending Approval"):
     conn = get_connection()
     conn.execute(
         """INSERT INTO incidents
@@ -122,6 +122,16 @@ def get_incident_by_id(incident_id):
 def update_status(incident_id, new_status):
     conn = get_connection()
     conn.execute("UPDATE incidents SET Status = ? WHERE Incident_ID = ?", (new_status, incident_id))
+    conn.commit()
+    conn.close()
+
+
+def delete_incident(incident_id):
+    """Permanently removes an incident from the database. Used from the
+    Incident Detail screen, guarded by an explicit confirmation step in
+    the UI since this action cannot be undone."""
+    conn = get_connection()
+    conn.execute("DELETE FROM incidents WHERE Incident_ID = ?", (incident_id,))
     conn.commit()
     conn.close()
 
